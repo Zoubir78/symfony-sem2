@@ -1,0 +1,10 @@
+// Importer FontAwesome
+
+@import"~@fortawesome/fontawesome-free/css/all.min.css";
+
+// Configuration & import de Bulma
+
+// Changer une variable de Bulma (couleur primaire):
+$primary: #5651ff;
+
+@import"~bulma";
