@@ -12,6 +12,11 @@ class HomeController extends AbstractController
      */
     public function index()
     {
+        // dump($this);
+        // dump('test');
+
+        throw new \Exception('Je suis un message d\'erreur !');
+
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
