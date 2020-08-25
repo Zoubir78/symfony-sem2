@@ -7,6 +7,7 @@ use App\Entity\Label;
 use App\Entity\Record;
 use App\Repository\ArtistRepository;
 use App\Repository\RecordRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -48,6 +49,7 @@ class RecordController extends AbstractController
     /**
      * Nouveaux albums
      * @Route("/news", name="record_news")
+     * //@IsGranted("ROLE_ADMIN")
      */
     public function recordNews(RecordRepository $repository)
     {
