@@ -40,7 +40,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     }
 
      /**
-     * Détecter une tentative de connexion
+     * 1. Détecter une tentative de connexion
      * Vérifier si on se trouve sur la page de connexion
      * et que l'on a envoyé le formulaire
      */
@@ -51,7 +51,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     }
     
     /**
-    * Récupérer les données du formulaire de connexion
+    * 2. Récupérer les données du formulaire de connexion
     */
     public function getCredentials(Request $request)
     {
@@ -69,7 +69,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     }
 
     /**
-    * Récupèrer l'utilisateur correspondant en BDD
+    * 3. Récupèrer l'utilisateur correspondant en BDD
     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -89,9 +89,28 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         return $user;
     }
 
+    /**
+     * 4. Vérifier la validité du mot de passe
+     */
+
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        $validPassword = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+
+        if($validPassword === false)
+        {
+            throw new CustomUserMessageAuthenticationException('Mot de passe erroné.');
+        }
+
+        /** 
+         * @var User $user 
+         */
+        if($user->getIsConfirmed() !== true)
+        {
+            throw new CustomUserMessageAuthenticationException('Vous devez confirmer votre adresse pour pouvoir connecter.');
+        }
+
+        return $validPassword;
     }
 
     /**
