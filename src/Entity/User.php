@@ -45,7 +45,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isConfirmed;
+    private $isConfirmed = false;
 
     /**
      * @ORM\Column(type="string", length=255)

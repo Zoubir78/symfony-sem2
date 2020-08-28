@@ -110,7 +110,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new CustomUserMessageAuthenticationException('Vous devez confirmer votre adresse pour pouvoir connecter.');
         }
 
-        return $validPassword;
+        return true;
     }
 
     /**

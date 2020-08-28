@@ -31,6 +31,8 @@ class UserFixtures extends BaseFixture
                 ->setPassword($password)
                 // ->setPseudo($this->faker->unique()->userName)
                 ->setPseudo('admin_' . $num)
+                ->confirmAccount()
+                ->renewToken()
             ;
         });
 
@@ -44,6 +46,8 @@ class UserFixtures extends BaseFixture
                 ->setPassword($password)
                 // ->setPseudo($this->faker->unique()->userName)
                 ->setPseudo('user_' . $num)
+                ->confirmAccount()
+                ->renewToken()
             ;
         });
     }
