@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\User;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
+
+class UserProfileFormType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('email',EmailType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Saisir un email.']),
+                    new Email(['message' => 'Veuillez saisir une adresse valide.'])
+                ]
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
+                'mapped' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Mot de passe manquant.']),
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                    ]),
+                ],
+            ])
+            ->add('pseudo', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Choisir un pseudo.']),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z0-9-_]+$/',
+                        'message' => 'Le pseudo ne peut contenir que des chiffres, lettres, tirets et underscores.'
+                    ]),
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => 'Le pseudo doit contenir au moins {{ limit }} caractères',
+                        'max' => 30,
+                        'maxMessage' => 'Le pseudo ne peut contenir plus de {{ limit }} caractères',
+                    ])
+                ]
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
+    }
+}

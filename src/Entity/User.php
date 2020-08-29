@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -11,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="Cette adresse email est déjà utilisée.")
  * @UniqueEntity(fields={"pseudo"}, message="Ce pseudo est déjà pris.")
+ * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
 {
@@ -51,6 +54,16 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $token;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $notes;
+
+    public function __construct()
+    {
+        $this->notes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -142,6 +155,24 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|Note[]
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setUser($this);
+        }
+
+        return $this;
+    }
+
     public function getIsConfirmed(): ?bool
     {
         return $this->isConfirmed;
@@ -162,6 +193,19 @@ class User implements UserInterface
     public function renewToken(): self
     {
         $this->token = bin2hex(random_bytes(16));
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): self
+    {
+        if ($this->notes->contains($note)) {
+            $this->notes->removeElement($note);
+            // set the owning side to null (unless already changed)
+            if ($note->getUser() === $this) {
+                $note->setUser(null);
+            }
+        }
 
         return $this;
     }
