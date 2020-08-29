@@ -23,16 +23,45 @@
                         {{ record.artist.name }}
                     </a>
                 </h2>
+                <hr>
+                <h3 class="subtitle">
+                    Notes: {{ record.notes|length }}
+                </h3>
+                <hr>
+                {# <h6 class="is-size-7">
+                    <span class="icon has-text-info"><i class="fas fa-info-circle"></i></span>
+                    <span>Noté le {{ record.createdAt|date('d/m/Y') }}</span>
+                </h6> #}
 
                 <p class="content">
                     {{ record.description }}
                 </p>
-
                 <hr>
                 <h6 class="is-size-7">
                     <span class="icon has-text-info"><i class="fas fa-info-circle"></i></span>
                     <span>Sorti le {{ record.releaseAt|date('d/m/Y') }}</span>
                 </h6>
+            </div>
+            <hr>
+            
+             {# afficher le formulaire seulement si note_form n'est pas null #}
+         
+            <div class="section">
+                  
+            {% include 'includes/flash.html.twig' %}   
+                {{ form_start(note_form) }}
+                    {{ form_row(note_form.value, {
+                        label: 'Votre note'
+                    }) }}
+
+                    {{ form_row(note_form.comment, {
+                        label: 'Commentaire (facultatif)'
+                    }) }}
+
+                    <button class="button is-success" type="submit">
+                        Noter
+                    </button>
+                {{ form_end(note_form) }}
             </div>
         </div>
     </section>

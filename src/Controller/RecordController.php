@@ -5,11 +5,17 @@ namespace App\Controller;
 use App\Entity\Artist;
 use App\Entity\Label;
 use App\Entity\Record;
+use App\Entity\Note;
+use App\Form\NoteFormType;
 use App\Repository\ArtistRepository;
+use App\Repository\NoteRepository;
 use App\Repository\RecordRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class RecordController extends AbstractController
 {
@@ -38,12 +44,32 @@ class RecordController extends AbstractController
     /**
      * Page d'un album
      * @Route("/record/{id}", name="record_page")
+     * @IsGranted("ROLE_USER")
      */
-    public function recordPage(Record $record)
+    public function recordPage(Request $request, Record $record, EntityManagerInterface $em, Security $security, NoteRepository $noteRepository)
     {
+        $note = (new Note())
+                ->setRecord($record)
+                ->setUser($this->getUser())
+            ;
+
+        $noteForm = $this->createForm(NoteFormType::class, $note);
+        $noteForm->handleRequest($request);
+
+        if ($noteForm->isSubmitted() && $noteForm->isValid()) {
+            $note = $noteForm->getData();
+
+            $em->persist($note);
+            $em->flush();
+
+            $this->addFlash('success', 'Note enregistrée !');
+        }
+
         return $this->render('record/record_page.html.twig', [
-            'record' => $record
+        'record' => $record,
+        'note_form' => $noteForm->createView()
         ]);
+    
     }
 
     /**
