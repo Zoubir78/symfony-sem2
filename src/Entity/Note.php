@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=NoteRepository::class)
- * @ORM\HasLifecycleCallbacks()
  */
 class Note
 {
@@ -49,13 +48,6 @@ class Note
      * Méthode appelée avant le 1er enregistrement de l'entité
      * @ORM\PrePersist()
      */
-    public function prePersist()
-    {
-        // Définir la date de création par défaut
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTime();
-        }
-    }
 
     public function getId(): ?int
     {
