@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="Cette adresse email est déjà utilisée.")
  * @UniqueEntity(fields={"pseudo"}, message="Ce pseudo est déjà pris.")
- * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
 {
