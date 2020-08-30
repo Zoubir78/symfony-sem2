@@ -19,28 +19,23 @@ class RecordFixtures extends BaseFixture implements DependentFixtureInterface
                 ->setLabel($this->faker->boolean(75) ? $this->getRandomReference('label') : null)
             ;
 
-            // Création des notes de l'album
-
-            $nbUsers = $this->faker->numberBetween(0, 10);
-            $users = $this->getRandomReference('user', $nbUsers);
-
             // Création des notes
+
+            $users = $this->faker->getRandomReference('user');
+            
             foreach ($users as $user) {
 
                 $note = (new Note())
                     ->setUser($user)
                     ->setValue($this->faker->numberBetween(0, 10))
-                    ->setCreatedAt($this->faker->dateTimeBetween($record->getReleaseAt()))
+                    ->setCreatedAt($this->faker->dateTimeBetween())
                 ;
-
-                // Ajout de la note au Record
+                
                 $record->addNote($note);
             }
 
             return $record;
         });
-
-        // $manager->flush();
     }
 
     public function getDependencies()
