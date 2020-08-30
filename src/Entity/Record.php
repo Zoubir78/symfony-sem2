@@ -46,8 +46,7 @@ class Record
     private $label;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Note", mappedBy="record", orphanRemoval=true, cascade={"persist"})
-     * @ORM\OrderBy({"createdAt"="DESC"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Note", mappedBy="record", orphanRemoval=true)
      */
     private $notes;
 
